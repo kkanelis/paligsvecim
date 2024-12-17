@@ -55,6 +55,15 @@
             color: #b22222;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
+        ol {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-left: 0px;
+        }
+        li {
+            text-align: left;
+        }
     </style>
 </head>
 <body>        
@@ -65,19 +74,33 @@
 
         $childs = $db->query("SELECT * FROM children")->fetchAll();
         $letters = $db->query("SELECT * FROM letters")->fetchAll();
-
+        $gifts = $db->query("SELECT * FROM gifts")->fetchAll();
+        
         echo "<div class='card-container'>";
         foreach ($childs as $child) {
             foreach ($letters as $letter) {
                 if ($child['id'] === $letter['sender_id']) {
                     echo "<div class='card'>";
-                    echo "<h2>" . htmlspecialchars($child['firstname']) . " " . htmlspecialchars($child['surname']) . "</h2>";
+                    echo "<h1>" . htmlspecialchars($child['firstname']) . " " . htmlspecialchars($child['surname']) . "</h1>";
                     echo "<div class='age'>Vecums: " . htmlspecialchars($child['age']) . "</div>";
                     echo "<p>" . nl2br(htmlspecialchars($letter['letter_text'])) . "</p>";
+                    echo "<h2>" . "Bērna vēlmes ko vēlas saņemt:" . "</h2>";
+                    echo "<div class='card-container'>";
+                    echo "<ol>";
+                    
+                    foreach ($gifts as $gift) { 
+                        if (str_contains(strtolower($letter['letter_text']), strtolower($gift['name']))) {
+                            echo "<li>";
+                            echo nl2br(htmlspecialchars($gift['name']));
+                            echo "</li>";
+                        }
+                    }
                     echo "</div>";
+                    echo "</ol>";
+                    echo "</div>";
+                    }
                 }
             }
-        }
         echo "</div>";
     ?>
 </body>
